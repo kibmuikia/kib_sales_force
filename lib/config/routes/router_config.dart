@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart' show GoRoute, GoRouter, RouteBase;
-import 'package:kib_sales_force/core/constants/app_constants.dart';
-import 'package:kib_sales_force/core/preferences/shared_preferences_manager.dart' show AppPrefsAsyncManager;
-import 'package:kib_sales_force/presentation/screens/initial_my_home_page.dart';
+import 'package:kib_sales_force/core/constants/app_constants.dart' show appName;
+import 'package:kib_sales_force/core/preferences/shared_preferences_manager.dart'
+    show AppPrefsAsyncManager;
+import 'package:kib_sales_force/presentation/screens/auth/sign_in/sign_in_screen.dart'
+    show SignInScreen;
+import 'package:kib_sales_force/presentation/screens/auth/sign_up/sign_up_screen.dart'
+    show SignUpScreen;
+import 'package:kib_sales_force/presentation/screens/initial_my_home_page.dart'
+    show MyHomePage;
 
 class AppRoute {
   final String name;
@@ -49,7 +55,8 @@ class AppNavigation {
     try {
       _appRouteConfig = GoRouter(
         navigatorKey: appRootNavigatorStateKey,
-        initialLocation: AppRoutes.root.path, // TODO: change to actual choosen root, eg, signIn
+        initialLocation: AppRoutes
+            .root.path, // TODO: change to actual choosen root, eg, signIn
         routes: _routes(prefsManager),
       );
 
@@ -65,9 +72,31 @@ class AppNavigation {
       GoRoute(
         path: AppRoutes.root.path,
         name: AppRoutes.root.name,
-        builder: (context, state) => MyHomePage(title: appName,),
+        builder: (context, state) => SignInScreen(),
       ),
-      // other routes
+      GoRoute(
+        path: AppRoutes.signIn.path,
+        name: AppRoutes.signIn.name,
+        builder: (context, state) => SignInScreen(),
+        redirect: (context, state) async {
+          if ((await prefsManager.getCurrentUserUid())?.isNotEmpty == true) {
+            return AppRoutes.home.path;
+          }
+          return null;
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.signUp.path,
+        name: AppRoutes.signUp.name,
+        builder: (context, state) => SignUpScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.home.path,
+        name: AppRoutes.home.name,
+        builder: (context, state) => MyHomePage(
+          title: appName,
+        ),
+      ),
     ];
   }
 
