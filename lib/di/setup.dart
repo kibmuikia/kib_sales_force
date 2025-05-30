@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart' show GetIt;
 import 'package:kib_flutter_utils/kib_flutter_utils.dart' show ExceptionX;
+import 'package:kib_sales_force/config/routes/router_config.dart' show AppNavigation;
 import 'package:kib_sales_force/core/preferences/shared_preferences_manager.dart'
     show AppPrefs, AppPrefsAsyncManager;
 import 'package:kib_utils/kib_utils.dart' show Result, tryResultAsync;
@@ -11,6 +12,7 @@ Future<Result<bool, Exception>> setupServiceLocator() async {
   return await tryResultAsync<bool, Exception>(
     () async {
       _setupAppPrefs();
+      _setupAppNavigation();
       return true;
     },
     (err) => err is Exception
@@ -31,5 +33,19 @@ void _setupAppPrefs() {
 
   if (!getIt.isRegistered<AppPrefsAsyncManager>()) {
     getIt.registerSingleton<AppPrefsAsyncManager>(AppPrefs.app);
+  }
+}
+
+/// Setup Kib Sales Force Navigation
+void _setupAppNavigation() {
+  if (!AppPrefs.isInitialized) {
+    AppPrefs.init();
+  }
+
+  if (!getIt.isRegistered<AppNavigation>()) {
+    if (!AppNavigation.isInitialized) {
+      AppNavigation.init(prefsManager: AppPrefs.app);
+    }
+    getIt.registerSingleton<AppNavigation>(AppNavigation.instance);
   }
 }
