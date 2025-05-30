@@ -9,6 +9,8 @@ import 'package:kib_sales_force/config/routes/router_config.dart'
     show AppNavigation;
 import 'package:kib_sales_force/core/preferences/shared_preferences_manager.dart'
     show AppPrefs, AppPrefsAsyncManager;
+import 'package:kib_sales_force/firebase_services/firebase_auth_service.dart'
+    show FirebaseAuthService;
 import 'package:kib_utils/kib_utils.dart' show Result, tryResultAsync;
 
 final getIt = GetIt.instance;
@@ -75,11 +77,11 @@ Future<Result<bool, Exception>> _setupFirebaseServices() async =>
           getIt.registerSingleton<FirebaseAuth>(FirebaseAuth.instance);
         }
 
-        /* if (!getIt.isRegistered<FirebaseAuthService>()) {
+        if (!getIt.isRegistered<FirebaseAuthService>()) {
           getIt.registerSingleton<FirebaseAuthService>(
             FirebaseAuthService(firebaseAuth: getIt<FirebaseAuth>()),
           );
-        } */
+        }
 
         if (!getIt.isRegistered<FirebaseFirestore>()) {
           getIt
