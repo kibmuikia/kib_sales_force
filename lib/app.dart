@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kib_flutter_utils/kib_flutter_utils.dart';
+import 'package:kib_sales_force/core/constants/app_constants.dart' show appName;
 import 'package:kib_sales_force/presentation/screens/initial_my_home_page.dart'
     show MyHomePage;
 
@@ -20,7 +21,7 @@ class _KibSalesForceState extends StateK<KibSalesForce> {
   @override
   Widget buildWithTheme(BuildContext context) {
     return MaterialApp(
-      title: 'Kib Sales Force',
+      title: appName,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -39,7 +40,7 @@ class _KibSalesForceState extends StateK<KibSalesForce> {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Kib Sales Force'),
+      home: const MyHomePage(title: appName),
     );
   }
 
