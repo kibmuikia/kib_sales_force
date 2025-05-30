@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart' show GoRoute, GoRouter, RouteBase;
-import 'package:kib_sales_force/core/constants/app_constants.dart' show appName;
 import 'package:kib_sales_force/core/preferences/shared_preferences_manager.dart'
     show AppPrefsAsyncManager;
 import 'package:kib_sales_force/presentation/screens/auth/sign_in/sign_in_screen.dart'
     show SignInScreen;
 import 'package:kib_sales_force/presentation/screens/auth/sign_up/sign_up_screen.dart'
     show SignUpScreen;
-import 'package:kib_sales_force/presentation/screens/initial_my_home_page.dart'
-    show MyHomePage;
+import 'package:kib_sales_force/presentation/screens/home/home_screen.dart'
+    show HomeScreenProviderUtil;
 
 class AppRoute {
   final String name;
@@ -93,9 +92,7 @@ class AppNavigation {
       GoRoute(
         path: AppRoutes.home.path,
         name: AppRoutes.home.name,
-        builder: (context, state) => MyHomePage(
-          title: appName,
-        ),
+        builder: (context, state) => HomeScreenProviderUtil(),
       ),
     ];
   }
