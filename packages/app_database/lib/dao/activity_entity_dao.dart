@@ -35,6 +35,18 @@ class ActivityEntityDao extends BaseDao<ActivityEntity> {
     }
   }
 
+  /// Get all activities for a user
+  List<ActivityEntity> getActivitiesForUser(String userId) {
+    try {
+      final query = box.query(ActivityEntity_.userUid.equals(userId))
+        ..order(ActivityEntity_.createdAt, flags: Order.descending);
+      return query.build().find();
+    } on Exception catch (e) {
+      debugPrint('** ActivityEntityDao:getActivitiesForUser: $e *');
+      return [];
+    }
+  }
+
   /// Save or update activity
   /// Returns the ID of the saved/updated activity or -1 if operation failed
   int saveActivity(ActivityEntity activity) {

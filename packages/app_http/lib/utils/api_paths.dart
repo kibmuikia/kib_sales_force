@@ -84,6 +84,7 @@ abstract class BaseEndpoint {
 class CustomersEndpoints {
   static const customers = _CustomersEndpoint('');
   static const customer = _CustomersEndpoint(':customerId');
+  static const createCustomer = _CustomersEndpoint('create');
 }
 
 class _CustomersEndpoint extends BaseEndpoint {
@@ -98,6 +99,7 @@ class _CustomersEndpoint extends BaseEndpoint {
 class ActivitiesEndpoints {
   static const activities = _ActivitiesEndpoint('');
   static const activity = _ActivitiesEndpoint(':activityId');
+  static const createActivity = _ActivitiesEndpoint('create');
 }
 
 class _ActivitiesEndpoint extends BaseEndpoint {
@@ -112,6 +114,7 @@ class _ActivitiesEndpoint extends BaseEndpoint {
 class VisitsEndpoints {
   static const visits = _VisitsEndpoint('');
   static const visit = _VisitsEndpoint(':visitId');
+  static const createVisit = _VisitsEndpoint('create');
 }
 
 class _VisitsEndpoint extends BaseEndpoint {

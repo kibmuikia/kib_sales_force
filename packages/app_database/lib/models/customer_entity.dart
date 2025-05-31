@@ -25,13 +25,18 @@ class CustomerEntity {
   @Property(type: PropertyType.date, uid: 4494686912394081775)
   DateTime createdAt;
 
+  @Property(uid: 4781502931258714917)
+  String userUid;
+
   CustomerEntity({
     required this.autoId,
     required this.id,
     required this.name,
     required this.createdAt,
+    required this.userUid,
   });
 
   @override
-  String toString() => 'CustomerEntity(id: $autoId, id: $id, name: $name, createdAt: $createdAt)';
+  String toString() =>
+      'CustomerEntity(id: $autoId, id: $id, name: $name, createdAt: $createdAt, userUuid: $userUid)';
 }

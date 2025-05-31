@@ -25,13 +25,17 @@ class ActivityEntity {
   @Property(type: PropertyType.date, uid: 4847536752488570866)
   DateTime createdAt;
 
+  @Property(uid: 4591971185051021712)
+  String userUid;
+
   ActivityEntity({
     required this.autoId,
     required this.id,
     required this.description,
     required this.createdAt,
+    required this.userUid,
   });
 
   @override
-  String toString() => 'ActivityEntity(id: $autoId, id: $id, description: $description, createdAt: $createdAt)';
+  String toString() => 'ActivityEntity(id: $autoId, id: $id, description: $description, createdAt: $createdAt, userUid: $userUid)';
 }

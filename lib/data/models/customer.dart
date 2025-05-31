@@ -1,5 +1,6 @@
 import 'dart:convert' show jsonEncode;
 
+import 'package:app_database/models/export.dart' show CustomerEntity;
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:kib_sales_force/core/constants/app_constants.dart'
@@ -54,6 +55,21 @@ class Customer extends Equatable {
 
   bool get isValid => id >= 0 && name.trim().isNotEmpty;
   bool get isDefault => id == 0 && name == defaultCustomerName;
+
+  // mappers
+  CustomerEntity toEntity(String userUid) => CustomerEntity(
+        id: id,
+        name: name,
+        createdAt: createdAt,
+        autoId: 0,
+        userUid: userUid,
+      );
+
+  static Customer fromEntity(CustomerEntity entity) => Customer(
+        id: entity.id,
+        name: entity.name,
+        createdAt: entity.createdAt,
+      );
 }
 
 /* 

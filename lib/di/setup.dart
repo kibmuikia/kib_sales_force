@@ -14,6 +14,8 @@ import 'package:kib_sales_force/core/preferences/shared_preferences_manager.dart
     show AppPrefs, AppPrefsAsyncManager;
 import 'package:kib_sales_force/firebase_services/firebase_auth_service.dart'
     show FirebaseAuthService;
+import 'package:kib_sales_force/services/export.dart'
+    show ActivitiesService, CustomersService;
 import 'package:kib_utils/kib_utils.dart' show Result, tryResultAsync;
 
 final getIt = GetIt.instance;
@@ -27,6 +29,7 @@ Future<Result<bool, Exception>> setupServiceLocator() async {
       _setupAppNavigation();
       _setupServer();
       await _setupDatabase();
+      _setupServices();
       return true;
     },
     (err) => err is Exception
@@ -122,4 +125,32 @@ void _setupServer() {
 Future<void> _setupDatabase() async {
   final databaseService = await DatabaseService.create();
   getIt.registerSingleton<DatabaseService>(databaseService);
+}
+
+/// Setup services for the project
+void _setupServices() {
+  _setupCustomersService();
+  _setupActivitiesService();
+}
+
+/// Setup Customers services
+void _setupCustomersService() {
+  getIt.registerLazySingleton<CustomersService>(
+    () => CustomersService(
+      databaseService: getIt<DatabaseService>(),
+      serverService: getIt<ServerService>(),
+      authPrefs: getIt<AppPrefsAsyncManager>(),
+    ),
+  );
+}
+
+/// Setup Activities services
+void _setupActivitiesService() {
+  getIt.registerLazySingleton<ActivitiesService>(
+    () => ActivitiesService(
+      databaseService: getIt<DatabaseService>(),
+      serverService: getIt<ServerService>(),
+      authPrefs: getIt<AppPrefsAsyncManager>(),
+    ),
+  );
 }

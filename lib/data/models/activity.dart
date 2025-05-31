@@ -1,5 +1,6 @@
 import 'dart:convert' show jsonEncode;
 
+import 'package:app_database/models/export.dart' show ActivityEntity;
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:kib_sales_force/core/constants/app_constants.dart'
@@ -54,6 +55,21 @@ class Activity extends Equatable {
 
   bool get isValid => id >= 0 && description.trim().isNotEmpty;
   bool get isDefault => id == 0 && description == defaultActivityDescription;
+
+  // mappers
+  ActivityEntity toEntity(String userUid) => ActivityEntity(
+        id: id,
+        description: description,
+        createdAt: createdAt,
+        autoId: 0,
+        userUid: userUid,
+      );
+
+  static Activity fromEntity(ActivityEntity entity) => Activity(
+        id: entity.id,
+        description: entity.description,
+        createdAt: entity.createdAt,
+      );
 }
 
 /* 

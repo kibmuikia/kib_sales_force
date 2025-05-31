@@ -35,6 +35,18 @@ class CustomerEntityDao extends BaseDao<CustomerEntity> {
     }
   }
 
+  /// Get all customers for a user
+  List<CustomerEntity> getCustomersForUser(String userId) {
+    try {
+      final query = box.query(CustomerEntity_.userUid.equals(userId))
+        ..order(CustomerEntity_.createdAt, flags: Order.descending);
+      return query.build().find();
+    } on Exception catch (e) {
+      debugPrint('** CustomerEntityDao:getCustomersForUser: $e *');
+      return [];
+    }
+  }
+
   /// Save or update customer
   /// Returns the ID of the saved/updated customer or -1 if operation failed
   int saveCustomer(CustomerEntity customer) {
