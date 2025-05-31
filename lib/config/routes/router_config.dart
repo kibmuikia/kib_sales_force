@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart' show GoRoute, GoRouter, RouteBase;
+import 'package:kib_debug_print/kib_debug_print.dart' show kprint;
 import 'package:kib_sales_force/core/preferences/shared_preferences_manager.dart'
     show AppPrefsAsyncManager;
 import 'package:kib_sales_force/presentation/screens/auth/sign_in/sign_in_screen.dart'
@@ -47,15 +48,22 @@ class AppNavigation {
     _initialized = false;
   }
 
-  static void init({required AppPrefsAsyncManager prefsManager}) {
+  static void init({required AppPrefsAsyncManager prefsManager}) async {
     if (_initialized) {
       return;
     }
     try {
+      final isAuthenticated =
+          (await prefsManager.getCurrentUserUid())?.isNotEmpty == true;
+      kprint.lg('router_config:init:isAuthenticated: $isAuthenticated');
+
+      final initialLocation = isAuthenticated
+          ? AppRoutes.home.path
+          : AppRoutes.signIn.path;
+
       _appRouteConfig = GoRouter(
         navigatorKey: appRootNavigatorStateKey,
-        initialLocation: AppRoutes
-            .root.path, // TODO: change to actual choosen root, eg, signIn
+        initialLocation: initialLocation,
         routes: _routes(prefsManager),
       );
 

@@ -2,7 +2,7 @@ import 'package:app_database/app_database.dart' show DatabaseService;
 import 'package:app_http/app_http.dart' show ServerService;
 import 'package:app_http/utils/export.dart';
 import 'package:kib_debug_print/kib_debug_print.dart' show kprint;
-import 'package:kib_flutter_utils/kib_flutter_utils.dart' show ExceptionX;
+import 'package:kib_flutter_utils/kib_flutter_utils.dart' show ExceptionX, UnauthorizedException;
 import 'package:kib_sales_force/core/preferences/shared_preferences_manager.dart'
     show AppPrefsAsyncManager;
 import 'package:kib_sales_force/core/utils/export.dart';
@@ -71,7 +71,7 @@ class VisitsService {
           final authCheckResult = await isAuthenticated;
           if (authCheckResult.valueOrNull == false ||
               authCheckResult.isFailure) {
-            return false;
+            throw UnauthorizedException('User is not authenticated');
           }
 
           final result = await saveVisitLocally(
@@ -87,9 +87,22 @@ class VisitsService {
                 data: visit.toString(),
               );
               kprint.lg('visits-service:saveVisit:serverResult: $serverResult');
-              return serverResult.success;
-            case Failure(error: final _):
-              return false;
+              if (serverResult.success) {
+                return true;
+              }
+              throw ExceptionX(
+                message: 'Failed to save visit to server',
+                errorType: serverResult.apiError!.runtimeType,
+                stackTrace: StackTrace.current,
+                error: serverResult.apiError!.error,
+              );
+            case Failure(error: final e):
+              throw ExceptionX(
+                message: 'Failed to save visit locally',
+                errorType: e.runtimeType,
+                stackTrace: StackTrace.current,
+                error: e,
+              );
           }
         },
         (err) => err is Exception

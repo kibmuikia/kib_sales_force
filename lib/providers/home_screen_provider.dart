@@ -30,7 +30,7 @@ class HomeScreenProvider extends ChangeNotifier {
 
   Future<void> init() async {
     if (!_status.isLoading) {
-      _setupVisitsStream();
+      setupVisitsStream();
     }
   }
 
@@ -44,7 +44,7 @@ class HomeScreenProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _setupVisitsStream() {
+  void setupVisitsStream() {
     _visitsSubscription?.cancel();
     _visitsSubscription = _visitsService.streamVisits().listen(
       (entries) {

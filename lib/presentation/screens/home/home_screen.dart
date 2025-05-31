@@ -13,7 +13,7 @@ import 'package:kib_sales_force/di/setup.dart' show getIt;
 import 'package:kib_sales_force/firebase_services/firebase_auth_service.dart'
     show FirebaseAuthService;
 import 'package:kib_sales_force/presentation/reusable_widgets/export.dart'
-    show DataCard, showExitConfirmationDialog;
+    show CreateVisitBottomSheet, DataCard, showExitConfirmationDialog;
 import 'package:kib_sales_force/providers/home_screen_provider.dart'
     show HomeScreenProvider;
 import 'package:kib_utils/kib_utils.dart';
@@ -145,7 +145,9 @@ class _HomeScreenState extends StateK<HomeScreen> {
             body: SafeArea(
               child: RefreshIndicator(
                 key: _refreshKey,
-                onRefresh: () async {},
+                onRefresh: () async {
+                  _homeScreenProvider.setupVisitsStream();
+                },
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
@@ -197,7 +199,9 @@ class _HomeScreenState extends StateK<HomeScreen> {
   AppBar _buildAppBar() {
     return AppBar(
       title: InkWell(
-        onTap: () {}, // TODO: to implement
+        onTap: () {
+          _homeScreenProvider.setupVisitsStream();
+        },
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,7 +240,17 @@ class _HomeScreenState extends StateK<HomeScreen> {
         side: BorderSide(color: colorScheme.primary),
       ),
       backgroundColor: colorScheme.surface,
-      onPressed: () {}, // TODO: to implement
+      onPressed: () async {
+        final result = await CreateVisitBottomSheet.show(
+          context,
+          (visit) {
+            kprint.lg('home_screen:_buildFloatingActionButton: visit: $visit');
+            _homeScreenProvider.setupVisitsStream();
+          },
+          entryToEdit: null,
+        );
+        kprint.lg('home_screen:_buildFloatingActionButton: result: $result');
+      },
       child: Icon(Icons.add, color: colorScheme.onSurface),
     );
   }
