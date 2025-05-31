@@ -13,7 +13,7 @@ import 'package:kib_sales_force/di/setup.dart' show getIt;
 import 'package:kib_sales_force/firebase_services/firebase_auth_service.dart'
     show FirebaseAuthService;
 import 'package:kib_sales_force/presentation/reusable_widgets/export.dart'
-    show CreateVisitBottomSheet, DataCard, showExitConfirmationDialog, VisitsStatisticsCard;
+    show CreateVisitBottomSheet, DataCard, VisitDetailsBottomSheet, VisitsStatisticsCard, showExitConfirmationDialog;
 import 'package:kib_sales_force/providers/home_screen_provider.dart'
     show HomeScreenProvider;
 import 'package:kib_utils/kib_utils.dart';
@@ -183,7 +183,7 @@ class _HomeScreenState extends StateK<HomeScreen> {
                         const SizedBox(height: 16),
                         _buildListOfVisits(
                           visits,
-                          onTap: (entry) {}, // TODO: to implement
+                          onTap: (entry) => VisitDetailsBottomSheet.show(context, entry),
                         ),
                         const SizedBox(height: 100),
                       ],
