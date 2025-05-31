@@ -138,3 +138,171 @@ flutter test
 3. **Firebase Integration**
    - Pros: Quick setup, scalable
    - Cons: Vendor lock-in, potential costs at scale
+
+## Project Structure
+
+```
+kib_sales_force/
+├── assets/
+│   ├── images/
+│   └── screenshots/
+│       ├── create-visit-one_dev.kib.kib_sales_force.jpg
+│       ├── create-visit-three_dev.kib.kib_sales_force.jpg
+│       ├── create-visit-two_dev.kib.kib_sales_force.jpg
+│       ├── search-filter-one_dev.kib.kib_sales_force.jpg
+│       ├── search-visits-two_dev.kib.kib_sales_force.jpg
+│       ├── view-basic-statistics_dev.kib.kib_sales_force.jpg
+│       └── view-list-of-customer-visits_dev.kib.kib_sales_force.jpg
+│
+├── integration_test/
+│   └── app_database_dao_tests/
+│       ├── customer_entity_dao_test.dart
+│       └── theme_mode_dao_test.dart
+│
+├── lib/
+│   ├── app.dart
+│   ├── config/
+│   │   ├── env/
+│   │   │   ├── env.dart
+│   │   │   └── env.g.dart
+│   │   ├── firebase_config/
+│   │   │   └── config.dart
+│   │   ├── routes/
+│   │   │   ├── navigation_helpers.dart
+│   │   │   └── router_config.dart
+│   │   └── theme/
+│   │       └── app_theme.dart
+│   │
+│   ├── core/
+│   │   ├── constants/
+│   │   │   └── app_constants.dart
+│   │   ├── errors/
+│   │   │   └── exceptions.dart
+│   │   ├── preferences/
+│   │   │   ├── base.dart
+│   │   │   └── shared_preferences_manager.dart
+│   │   └── utils/
+│   │       ├── common_enum.dart
+│   │       ├── data_generators.dart
+│   │       ├── export.dart
+│   │       ├── global_keys.dart
+│   │       └── logout_utils.dart
+│   │
+│   ├── data/
+│   │   └── models/
+│   │       ├── activity.dart
+│   │       ├── activity.g.dart
+│   │       ├── customer.dart
+│   │       ├── customer.g.dart
+│   │       ├── export.dart
+│   │       ├── visit.dart
+│   │       └── visit.g.dart
+│   │
+│   ├── di/
+│   │   └── setup.dart
+│   │
+│   ├── firebase_options.dart
+│   ├── firebase_services/
+│   │   └── firebase_auth_service.dart
+│   │
+│   ├── main.dart
+│   ├── main_ext.dart
+│   │
+│   ├── presentation/
+│   │   ├── reusable_widgets/
+│   │   │   ├── create_visit_bottomsheet.dart
+│   │   │   ├── data_card.dart
+│   │   │   ├── exit_confirmation_dialog.dart
+│   │   │   ├── export.dart
+│   │   │   ├── visit_details_bottomsheet.dart
+│   │   │   └── visits_statistics_card.dart
+│   │   └── screens/
+│   │       ├── auth/
+│   │       │   ├── sign_in/
+│   │       │   │   └── sign_in_screen.dart
+│   │       │   └── sign_up/
+│   │       │       └── sign_up_screen.dart
+│   │       ├── home/
+│   │       │   └── home_screen.dart
+│   │       └── initial_my_home_page.dart
+│   │
+│   ├── providers/
+│   │   ├── create_visit_provider.dart
+│   │   ├── export.dart
+│   │   └── home_screen_provider.dart
+│   │
+│   └── services/
+│       ├── activities_service.dart
+│       ├── customers_service.dart
+│       ├── export.dart
+│       └── visits_service.dart
+│
+└── packages/
+    ├── app_database/
+    │   ├── lib/
+    │   │   ├── app_database.dart
+    │   │   ├── dao/
+    │   │   │   ├── activity_entity_dao.dart
+    │   │   │   ├── base.dart
+    │   │   │   ├── customer_entity_dao.dart
+    │   │   │   ├── export.dart
+    │   │   │   ├── queryManager/
+    │   │   │   │   ├── base.dart
+    │   │   │   │   ├── enums.dart
+    │   │   │   │   ├── export.dart
+    │   │   │   │   └── theme_mode_dao_querymanager.dart
+    │   │   │   ├── theme_mode_dao.dart
+    │   │   │   └── visit_entity_dao.dart
+    │   │   ├── database_service.dart
+    │   │   ├── models/
+    │   │   │   ├── activity_entity.dart
+    │   │   │   ├── customer_entity.dart
+    │   │   │   ├── export.dart
+    │   │   │   ├── model_ids.dart
+    │   │   │   ├── theme_mode_model.dart
+    │   │   │   └── visit_entity.dart
+    │   │   ├── objectbox-model.json
+    │   │   └── objectbox.g.dart
+    │   └── test/
+    │       └── app_database_test.dart
+    │
+    └── app_http/
+        ├── lib/
+        │   ├── app_http.dart
+        │   ├── config/
+        │   │   ├── env.dart
+        │   │   └── env.g.dart
+        │   ├── server_service.dart
+        │   └── utils/
+        │       ├── api_error.dart
+        │       ├── api_paths.dart
+        │       ├── api_response.dart
+        │       ├── constants.dart
+        │       ├── export.dart
+        │       ├── http_validator.dart
+        │       └── retry_options.dart
+        └── test/
+            └── app_http_test.dart
+```
+
+### Directory Structure Overview
+
+1. **Root Level**
+   - `assets/`: Contains images and screenshots
+   - `integration_test/`: Integration tests for database operations
+   - `lib/`: Main application code
+   - `packages/`: Local packages for database and HTTP functionality
+
+2. **Main Application (`lib/`)**
+   - `config/`: Application configuration (env, routes, theme)
+   - `core/`: Core utilities and constants
+   - `data/`: Data models and repositories
+   - `di/`: Dependency injection setup
+   - `firebase_services/`: Firebase integration
+   - `presentation/`: UI components and screens
+   - `providers/`: State management
+   - `services/`: Business logic services
+
+3. **Local Packages**
+   - `app_database/`: ObjectBox database implementation
+   - `app_http/`: HTTP client and API utilities
