@@ -21,7 +21,7 @@ class DatabaseService {
   /// The ObjectBox Store, created in init()
   late final Store _store;
 
-  late final Admin? _admin;
+  Admin? _admin;
 
   /// DAOs here
   late final ThemeModeDao themeModeDao;
@@ -51,6 +51,8 @@ class DatabaseService {
 
       if (kDebugMode && Admin.isAvailable()) {
         _admin = Admin(_store);
+      } else {
+        _admin = null;
       }
 
       // Initialize DAOs here
