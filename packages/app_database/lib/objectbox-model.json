@@ -1,0 +1,100 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:1000",
+      "lastPropertyId": "3:4194516950331066119",
+      "name": "ThemeModeModel",
+      "properties": [
+        {
+          "id": "1:8608593761304787301",
+          "name": "autoId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:917518401460075336",
+          "name": "mode",
+          "type": 9
+        },
+        {
+          "id": "3:4194516950331066119",
+          "name": "createdAt",
+          "type": 10
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:1001",
+      "lastPropertyId": "4:3451847593037743476",
+      "name": "CustomerEntity",
+      "properties": [
+        {
+          "id": "1:2156686820265552436",
+          "name": "autoId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:4575968678986614546",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:4494686912394081775",
+          "name": "createdAt",
+          "type": 10
+        },
+        {
+          "id": "4:3451847593037743476",
+          "name": "id",
+          "type": 6
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:1002",
+      "lastPropertyId": "4:4847536752488570866",
+      "name": "ActivityEntity",
+      "properties": [
+        {
+          "id": "1:5053459731144723610",
+          "name": "autoId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:8111402623661835611",
+          "name": "id",
+          "type": 6
+        },
+        {
+          "id": "3:8544234466963278429",
+          "name": "description",
+          "type": 9
+        },
+        {
+          "id": "4:4847536752488570866",
+          "name": "createdAt",
+          "type": 10
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "3:1002",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

@@ -1,3 +1,4 @@
+import 'package:app_database/app_database.dart' show DatabaseService;
 import 'package:app_http/app_http.dart' show ServerService;
 import 'package:cloud_firestore/cloud_firestore.dart' show FirebaseFirestore;
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
@@ -25,6 +26,7 @@ Future<Result<bool, Exception>> setupServiceLocator() async {
       await _setupFirebaseServices();
       _setupAppNavigation();
       _setupServer();
+      await _setupDatabase();
       return true;
     },
     (err) => err is Exception
@@ -114,4 +116,10 @@ void _setupServer() {
         ? ServerService.development(enableLogging: true)
         : ServerService.production(enableLogging: false),
   );
+}
+
+/// Setup database related dependencies
+Future<void> _setupDatabase() async {
+  final databaseService = await DatabaseService.create();
+  getIt.registerSingleton<DatabaseService>(databaseService);
 }
