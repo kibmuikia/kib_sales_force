@@ -1,0 +1,37 @@
+name: app_database
+description: "A helper package to handle/encapsulate database operations for application-kib_sales_force"
+version: 0.0.1
+homepage: https://github.com/kibmuikia/kib_sales_force
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  objectbox: ^4.0.3
+  objectbox_flutter_libs: any
+  path_provider: ^2.1.5
+  path: ^1.9.0
+  json_annotation: ^4.9.0
+  kib_debug_print: ^1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.14
+  objectbox_generator: any
+  json_serializable: ^6.9.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+# flutter:
+
+  # To add assets to your package, add an assets section, like this:
+  # assets:
+  #   - images/a_dot_burr.jpeg
+  #   - images/a_dot_ham.jpeg
