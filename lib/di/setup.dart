@@ -1,5 +1,7 @@
+import 'package:app_http/app_http.dart' show ServerService;
 import 'package:cloud_firestore/cloud_firestore.dart' show FirebaseFirestore;
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:get_it/get_it.dart' show GetIt;
 import 'package:kib_debug_print/kib_debug_print.dart' show kprint;
 import 'package:kib_flutter_utils/kib_flutter_utils.dart' show ExceptionX;
@@ -22,6 +24,7 @@ Future<Result<bool, Exception>> setupServiceLocator() async {
       _setupAppPrefs();
       await _setupFirebaseServices();
       _setupAppNavigation();
+      _setupServer();
       return true;
     },
     (err) => err is Exception
@@ -103,3 +106,12 @@ Future<Result<bool, Exception>> _setupFirebaseServices() async =>
               );
       },
     );
+
+/// Setup server service with environment-specific configuration
+void _setupServer() {
+  getIt.registerLazySingleton<ServerService>(
+    () => kDebugMode
+        ? ServerService.development(enableLogging: true)
+        : ServerService.production(enableLogging: false),
+  );
+}
