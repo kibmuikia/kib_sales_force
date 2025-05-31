@@ -28,6 +28,8 @@ dependencies:
   firebase_core: ^3.13.1
   firebase_auth: ^5.5.4
   cloud_firestore: ^5.6.8
+  app_http:
+    path: packages/app_http
 
 dev_dependencies:
   flutter_test:

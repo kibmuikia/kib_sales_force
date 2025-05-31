@@ -1,0 +1,31 @@
+name: app_http
+description: "A helper package to handle/encapsulate network request operations for application-kib_sales_force"
+version: 0.0.1
+homepage: https://github.com/kibmuikia/kib_sales_force
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dio: ^5.8.0+1
+  dio_smart_retry: ^7.0.1
+  pretty_dio_logger: ^1.4.0
+  kib_debug_print: ^1.0.0
+  envied: ^1.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.15
+  envied_generator: ^1.1.1
+
+# The following section is specific to Flutter packages.
+# flutter:
+
+  # To add assets to your package, add an assets section, like this:
+  # assets:
+  #   - images/a_dot_burr.jpeg
