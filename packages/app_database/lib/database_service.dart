@@ -27,6 +27,7 @@ class DatabaseService {
   late final ThemeModeDao themeModeDao;
   late final CustomerEntityDao customerEntityDao;
   late final ActivityEntityDao activityEntityDao;
+  late final VisitEntityDao visitEntityDao;
 
   /// Initialize the database
   static Future<DatabaseService> create() async {
@@ -56,6 +57,7 @@ class DatabaseService {
       themeModeDao = ThemeModeDao(_store.box<ThemeModeModel>());
       customerEntityDao = CustomerEntityDao(_store.box<CustomerEntity>());
       activityEntityDao = ActivityEntityDao(_store.box<ActivityEntity>());
+      visitEntityDao = VisitEntityDao(_store.box<VisitEntity>());
 
       return true;
     } on Exception catch (e, trace) {
@@ -71,6 +73,7 @@ class DatabaseService {
       themeModeDao.close();
       customerEntityDao.close();
       activityEntityDao.close();
+      visitEntityDao.close();
 
       _admin?.close();
       _store.close();

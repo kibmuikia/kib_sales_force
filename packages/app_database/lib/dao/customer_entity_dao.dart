@@ -57,4 +57,18 @@ class CustomerEntityDao extends BaseDao<CustomerEntity> {
       return -1;
     }
   }
+
+  /// Save or update multiple customers
+  /// Returns the IDs of the saved customers or [] if operation failed
+  List<int> saveManyCustomers(List<CustomerEntity> customers) {
+    try {
+      if (customers.isEmpty) {
+        throw Exception('No customers to save');
+      }
+      return box.putMany(customers);
+    } on Exception catch (e) {
+      debugPrint('** CustomerEntityDao:saveMany: $e *');
+      return [];
+    }
+  }
 }

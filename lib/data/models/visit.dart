@@ -1,5 +1,6 @@
 import 'dart:convert' show jsonEncode;
 
+import 'package:app_database/models/export.dart' show VisitEntity;
 import 'package:equatable/equatable.dart' show Equatable;
 import 'package:json_annotation/json_annotation.dart'
     show JsonKey, JsonSerializable;
@@ -158,6 +159,35 @@ class Visit extends Equatable {
   bool get isToday => visitDate.year == DateTime.now().year && 
                       visitDate.month == DateTime.now().month && 
                       visitDate.day == DateTime.now().day;
+
+  // mappers
+  VisitEntity toVisitEntity({required String userUid}) {
+    return VisitEntity(
+      autoId: 0,
+      id: id,
+      customerId: customerId,
+      visitDate: visitDate, 
+      status: status,
+      location: location,
+      notes: notes,
+      activitiesDone: activitiesDone,
+      createdAt: createdAt,
+      userUid: userUid,
+    );
+  }
+
+  static Visit fromVisitEntity(VisitEntity entity) {
+    return Visit(
+      id: entity.id,
+      customerId: entity.customerId,
+      visitDate: entity.visitDate,
+      status: entity.status,
+      location: entity.location,
+      notes: entity.notes,
+      activitiesDone: entity.activitiesDone,
+      createdAt: entity.createdAt,
+    );
+  }
 }
 
 /* 

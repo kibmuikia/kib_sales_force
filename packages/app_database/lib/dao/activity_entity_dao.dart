@@ -57,4 +57,18 @@ class ActivityEntityDao extends BaseDao<ActivityEntity> {
       return -1;
     }
   }
+
+  /// Save or update multiple activities
+  /// Returns the IDs of the saved activities or [] if operation failed
+  List<int> saveManyActivities(List<ActivityEntity> activities) {
+    try {
+      if (activities.isEmpty) {
+        throw Exception('No activities to save');
+      }
+      return box.putMany(activities);
+    } on Exception catch (e) {
+      debugPrint('** ActivityEntityDao:saveMany: $e *');
+      return [];
+    }
+  }
 }

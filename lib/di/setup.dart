@@ -15,7 +15,7 @@ import 'package:kib_sales_force/core/preferences/shared_preferences_manager.dart
 import 'package:kib_sales_force/firebase_services/firebase_auth_service.dart'
     show FirebaseAuthService;
 import 'package:kib_sales_force/services/export.dart'
-    show ActivitiesService, CustomersService;
+    show ActivitiesService, CustomersService, VisitsService;
 import 'package:kib_utils/kib_utils.dart' show Result, tryResultAsync;
 
 final getIt = GetIt.instance;
@@ -131,6 +131,7 @@ Future<void> _setupDatabase() async {
 void _setupServices() {
   _setupCustomersService();
   _setupActivitiesService();
+  _setupVisitsService();
 }
 
 /// Setup Customers services
@@ -148,6 +149,17 @@ void _setupCustomersService() {
 void _setupActivitiesService() {
   getIt.registerLazySingleton<ActivitiesService>(
     () => ActivitiesService(
+      databaseService: getIt<DatabaseService>(),
+      serverService: getIt<ServerService>(),
+      authPrefs: getIt<AppPrefsAsyncManager>(),
+    ),
+  );
+}
+
+/// Setup Visits services
+void _setupVisitsService() {
+  getIt.registerLazySingleton<VisitsService>(
+    () => VisitsService(
       databaseService: getIt<DatabaseService>(),
       serverService: getIt<ServerService>(),
       authPrefs: getIt<AppPrefsAsyncManager>(),
