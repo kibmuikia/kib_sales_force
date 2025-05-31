@@ -115,6 +115,7 @@ class VisitsEndpoints {
   static const visits = _VisitsEndpoint('');
   static const visit = _VisitsEndpoint(':visitId');
   static const createVisit = _VisitsEndpoint('create');
+  static const updateVisit = _VisitsEndpoint(':visitId');
 }
 
 class _VisitsEndpoint extends BaseEndpoint {

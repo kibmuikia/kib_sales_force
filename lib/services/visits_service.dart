@@ -2,7 +2,8 @@ import 'package:app_database/app_database.dart' show DatabaseService;
 import 'package:app_http/app_http.dart' show ServerService;
 import 'package:app_http/utils/export.dart';
 import 'package:kib_debug_print/kib_debug_print.dart' show kprint;
-import 'package:kib_flutter_utils/kib_flutter_utils.dart' show ExceptionX, UnauthorizedException;
+import 'package:kib_flutter_utils/kib_flutter_utils.dart'
+    show ExceptionX, UnauthorizedException;
 import 'package:kib_sales_force/core/preferences/shared_preferences_manager.dart'
     show AppPrefsAsyncManager;
 import 'package:kib_sales_force/core/utils/export.dart';
@@ -135,4 +136,55 @@ class VisitsService {
       // TODO: process response, save locally and yield
     }
   }
+
+  // update visit to server, save locally first
+  Future<Result<bool, Exception>> updateVisit(Visit visit) async =>
+      tryResultAsync<bool, Exception>(
+        () async {
+          final authCheckResult = await isAuthenticated;
+          if (authCheckResult.valueOrNull == false ||
+              authCheckResult.isFailure) {
+            throw UnauthorizedException('User is not authenticated');
+          }
+
+          final result = await saveVisitLocally(visit, await currentUserUid);
+          switch (result) {
+            case Success(value: final _):
+              final serverResult =
+                  await _serverService.patch<Map<String, dynamic>>(
+                VisitsEndpoints.updateVisit.withParams(
+                  {
+                    ':visitId': visit.id,
+                  },
+                ),
+                data: visit.toString(),
+              );
+              if (serverResult.success) {
+                return true;
+              }
+              throw ExceptionX(
+                message: 'Failed to update visit to server',
+                errorType: serverResult.apiError!.runtimeType,
+                stackTrace: StackTrace.current,
+                error: serverResult.apiError!.error,
+              );
+            case Failure(error: final e):
+              throw ExceptionX(
+                message: 'Failed to update visit locally',
+                errorType: e.runtimeType,
+                stackTrace: StackTrace.current,
+                error: e,
+              );
+          }
+        },
+        (err) => err is Exception
+            ? err
+            : ExceptionX(
+                message: 'Error updating visit',
+                errorType: err.runtimeType,
+                stackTrace: StackTrace.current,
+                error: err),
+      );
+
+  //
 }
