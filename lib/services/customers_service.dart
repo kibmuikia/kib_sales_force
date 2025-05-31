@@ -83,7 +83,7 @@ class CustomersService {
             case Success(value: final _):
               final serverResult =
                   await _serverService.post<Map<String, dynamic>>(
-                CustomersEndpoints.createCustomer.path,
+                CustomersEndpoints.createCustomer.build(),
                 data: customer.toString(),
               );
               kprint.lg(
@@ -116,7 +116,7 @@ class CustomersService {
     yield processedLocalCustomers;
 
     final serverResult = await _serverService
-        .get<Map<String, dynamic>>(CustomersEndpoints.customers.path);
+        .get<Map<String, dynamic>>(CustomersEndpoints.customers.build());
     kprint.lg('');
     if (serverResult.success) {
       // TODO: process response, save locally and yield

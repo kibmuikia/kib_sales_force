@@ -83,7 +83,7 @@ class VisitsService {
             case Success(value: final _):
               final serverResult =
                   await _serverService.post<Map<String, dynamic>>(
-                VisitsEndpoints.createVisit.toString(),
+                VisitsEndpoints.createVisit.build(),
                 data: visit.toString(),
               );
               kprint.lg('visits-service:saveVisit:serverResult: $serverResult');
@@ -114,8 +114,10 @@ class VisitsService {
     yield processedLocalVisits;
 
     final serverResult = await _serverService
-        .get<Map<String, dynamic>>(VisitsEndpoints.visits.path);
+        .get<Map<String, dynamic>>(VisitsEndpoints.visits.build());
+
     kprint.lg('visits-service:streamVisits:serverResult: $serverResult');
+
     if (serverResult.success) {
       // TODO: process response, save locally and yield
     }

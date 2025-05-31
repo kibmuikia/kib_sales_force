@@ -17,6 +17,7 @@ import 'package:kib_sales_force/firebase_services/firebase_auth_service.dart'
 import 'package:kib_sales_force/services/export.dart'
     show ActivitiesService, CustomersService, VisitsService;
 import 'package:kib_utils/kib_utils.dart' show Result, tryResultAsync;
+import 'package:app_http/config/env.dart' show Env;
 
 final getIt = GetIt.instance;
 
@@ -115,9 +116,13 @@ Future<Result<bool, Exception>> _setupFirebaseServices() async =>
 /// Setup server service with environment-specific configuration
 void _setupServer() {
   getIt.registerLazySingleton<ServerService>(
-    () => kDebugMode
-        ? ServerService.development(enableLogging: true)
-        : ServerService.production(enableLogging: false),
+    () {
+      final service = kDebugMode
+          ? ServerService.development(enableLogging: true)
+          : ServerService.production(enableLogging: false);
+      service.setApiKey(Env.apiKey);
+      return service;
+    },
   );
 }
 

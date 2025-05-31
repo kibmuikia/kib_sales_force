@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:kib_debug_print/kib_debug_print.dart' show kprint;
 import 'package:kib_flutter_utils/kib_flutter_utils.dart';
 import 'package:kib_sales_force/config/routes/navigation_helpers.dart'
@@ -7,11 +8,12 @@ import 'package:kib_sales_force/core/preferences/shared_preferences_manager.dart
     show AppPrefsAsyncManager;
 import 'package:kib_sales_force/core/utils/export.dart'
     show homeScreenScaffoldKey, logoutUtil;
+import 'package:kib_sales_force/data/models/export.dart' show Visit;
 import 'package:kib_sales_force/di/setup.dart' show getIt;
 import 'package:kib_sales_force/firebase_services/firebase_auth_service.dart'
     show FirebaseAuthService;
 import 'package:kib_sales_force/presentation/reusable_widgets/export.dart'
-    show showExitConfirmationDialog;
+    show DataCard, showExitConfirmationDialog;
 import 'package:kib_sales_force/providers/home_screen_provider.dart'
     show HomeScreenProvider;
 import 'package:kib_utils/kib_utils.dart';
@@ -135,7 +137,7 @@ class _HomeScreenState extends StateK<HomeScreen> {
       child: Consumer<HomeScreenProvider>(
         builder: (context, provider, _) {
           final status = provider.status;
-          final entries = provider.entries;
+          final visits = provider.visits;
           return Scaffold(
             key: homeScreenScaffoldKey,
             appBar: _buildAppBar(),
@@ -148,12 +150,12 @@ class _HomeScreenState extends StateK<HomeScreen> {
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
                     children: [
-                      if (status.isLoading && entries.isEmpty)
+                      if (status.isLoading && visits.isEmpty)
                         const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [CircularProgressIndicator()],
                         ),
-                      if (!status.isLoading && entries.isEmpty)
+                      if (!status.isLoading && visits.isEmpty)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -174,9 +176,9 @@ class _HomeScreenState extends StateK<HomeScreen> {
                             ),
                           ],
                         ),
-                      if (!status.isLoading && entries.isNotEmpty) ...[
-                        _buildListOfEntries(
-                          entries,
+                      if (!status.isLoading && visits.isNotEmpty) ...[
+                        _buildListOfVisits(
+                          visits,
                           onTap: (entry) {}, // TODO: to implement
                         ),
                         const SizedBox(height: 100),
@@ -239,17 +241,27 @@ class _HomeScreenState extends StateK<HomeScreen> {
     );
   }
 
-  Widget _buildListOfEntries(
-    List<dynamic> entries, {
-    required Function(dynamic) onTap,
+  Widget _buildListOfVisits(
+    List<Visit> visits, {
+    required Function(Visit) onTap,
   }) {
     return ListView.builder(
       shrinkWrap: true,
-      itemCount: entries.length,
+      itemCount: visits.length,
       physics: const BouncingScrollPhysics(),
       itemBuilder: (context, i) {
-        final entry = entries[i];
-        return SizedBox.shrink(); // TODO: to implement
+        final visit = visits[i];
+
+        final visitDate = DateFormat('dd/MM/yyyy').format(visit.visitDate);
+        final createdAt =
+            DateFormat('dd/MM/yyyy HH:mm').format(visit.createdAt);
+
+        return DataCard(
+          title: 'Visit ${visit.id} for ${visit.customerId} on $visitDate',
+          subtitle:
+              'At ${visit.location},\nstatus: ${visit.status},\ncreated at: $createdAt',
+          onTap: () => onTap(visit),
+        );
       },
     );
   }

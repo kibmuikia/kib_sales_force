@@ -83,7 +83,7 @@ class ActivitiesService {
             case Success(value: final _):
               final serverResult =
                   await _serverService.post<Map<String, dynamic>>(
-                ActivitiesEndpoints.createActivity.path,
+                ActivitiesEndpoints.createActivity.build(),
                 data: activity.toString(),
               );
               kprint.lg(
@@ -116,7 +116,7 @@ class ActivitiesService {
     yield processedLocalActivities;
 
     final serverResult = await _serverService
-        .get<Map<String, dynamic>>(ActivitiesEndpoints.activities.path);
+        .get<Map<String, dynamic>>(ActivitiesEndpoints.activities.build());
     kprint.lg('');
     if (serverResult.success) {
       // TODO: process response, save locally and yield
