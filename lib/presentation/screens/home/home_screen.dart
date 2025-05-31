@@ -6,6 +6,7 @@ import 'package:kib_sales_force/config/routes/navigation_helpers.dart'
     show navigateToSignIn;
 import 'package:kib_sales_force/core/preferences/shared_preferences_manager.dart'
     show AppPrefsAsyncManager;
+import 'package:kib_sales_force/core/utils/common_enum.dart' show VisitStatus;
 import 'package:kib_sales_force/core/utils/export.dart'
     show homeScreenScaffoldKey, logoutUtil;
 import 'package:kib_sales_force/data/models/export.dart' show Visit;
@@ -13,7 +14,12 @@ import 'package:kib_sales_force/di/setup.dart' show getIt;
 import 'package:kib_sales_force/firebase_services/firebase_auth_service.dart'
     show FirebaseAuthService;
 import 'package:kib_sales_force/presentation/reusable_widgets/export.dart'
-    show CreateVisitBottomSheet, DataCard, VisitDetailsBottomSheet, VisitsStatisticsCard, showExitConfirmationDialog;
+    show
+        CreateVisitBottomSheet,
+        DataCard,
+        VisitDetailsBottomSheet,
+        VisitsStatisticsCard,
+        showExitConfirmationDialog;
 import 'package:kib_sales_force/providers/home_screen_provider.dart'
     show HomeScreenProvider;
 import 'package:kib_utils/kib_utils.dart';
@@ -179,11 +185,14 @@ class _HomeScreenState extends StateK<HomeScreen> {
                           ],
                         ),
                       if (!status.isLoading && visits.isNotEmpty) ...[
+                        _buildSearchAndFilter(context, provider),
+                        const SizedBox(height: 16),
                         VisitsStatisticsCard(visits: visits),
                         const SizedBox(height: 16),
                         _buildListOfVisits(
                           visits,
-                          onTap: (entry) => VisitDetailsBottomSheet.show(context, entry),
+                          onTap: (entry) =>
+                              VisitDetailsBottomSheet.show(context, entry),
                         ),
                         const SizedBox(height: 100),
                       ],
@@ -279,6 +288,65 @@ class _HomeScreenState extends StateK<HomeScreen> {
           onTap: () => onTap(visit),
         );
       },
+    );
+  }
+
+  Widget _buildSearchAndFilter(
+      BuildContext context, HomeScreenProvider provider) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Search bar
+        TextField(
+          decoration: InputDecoration(
+            prefixIcon: const Icon(Icons.search),
+            hintText: 'Search...',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            filled: true,
+            fillColor: colorScheme.surfaceVariant,
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+          ),
+          onChanged: provider.setSearchQuery,
+        ),
+        const SizedBox(height: 12),
+        // Status filter
+        Row(
+          children: [
+            const Text('Filter by status:'),
+            const SizedBox(width: 12),
+            DropdownButton<VisitStatus?>(
+              value: provider.statusFilter,
+              hint: const Text('All'),
+              items: [
+                const DropdownMenuItem<VisitStatus?>(
+                  value: null,
+                  child: Text('All'),
+                ),
+                ...VisitStatus.values
+                    .map((status) => DropdownMenuItem<VisitStatus?>(
+                          value: status,
+                          child: Text(status.label),
+                        )),
+              ],
+              onChanged: provider.setStatusFilter,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            const Spacer(),
+            if (provider.searchQuery.isNotEmpty ||
+                provider.statusFilter != null)
+              TextButton.icon(
+                icon: const Icon(Icons.clear),
+                label: const Text('Clear'),
+                onPressed: provider.clearFilters,
+              ),
+          ],
+        ),
+      ],
     );
   }
 

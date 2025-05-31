@@ -1,6 +1,8 @@
 import 'dart:async' show StreamSubscription;
 
 import 'package:flutter/material.dart' show ChangeNotifier;
+import 'package:kib_sales_force/core/utils/common_enum.dart'
+    show VisitStatus, StringVisitStatusExtension;
 import 'package:kib_sales_force/core/utils/export.dart' show GeneralStatus;
 import 'package:kib_sales_force/data/models/visit.dart';
 import 'package:kib_sales_force/di/setup.dart' show getIt;
@@ -21,12 +23,19 @@ class HomeScreenProvider extends ChangeNotifier {
   GeneralStatus _status = GeneralStatus.initial;
   Object? _error;
   List<Visit> _visits = [];
+  List<Visit> _allVisits = [];
   StreamSubscription<List<Visit>>? _visitsSubscription;
+
+  // Search & filter state
+  String _searchQuery = '';
+  VisitStatus? _statusFilter;
 
   GeneralStatus get status => _status;
   Object? get error => _error;
   String? get errorToString => _error?.toString();
   List<Visit> get visits => _visits;
+  String get searchQuery => _searchQuery;
+  VisitStatus? get statusFilter => _statusFilter;
 
   Future<void> init() async {
     if (!_status.isLoading) {
@@ -48,7 +57,8 @@ class HomeScreenProvider extends ChangeNotifier {
     _visitsSubscription?.cancel();
     _visitsSubscription = _visitsService.streamVisits().listen(
       (entries) {
-        _visits = entries;
+        _allVisits = entries;
+        _applySearchAndFilter();
         _status = GeneralStatus.loaded;
         notifyListeners();
       },
@@ -58,6 +68,41 @@ class HomeScreenProvider extends ChangeNotifier {
         notifyListeners();
       },
     );
+  }
+
+  void setSearchQuery(String query) {
+    _searchQuery = query;
+    _applySearchAndFilter();
+    notifyListeners();
+  }
+
+  void setStatusFilter(VisitStatus? status) {
+    _statusFilter = status;
+    _applySearchAndFilter();
+    notifyListeners();
+  }
+
+  void _applySearchAndFilter() {
+    List<Visit> filtered = List.from(_allVisits);
+    if (_searchQuery.isNotEmpty) {
+      filtered = filtered
+          .where((v) =>
+              v.location.toLowerCase().contains(_searchQuery.toLowerCase()))
+          .toList();
+    }
+    if (_statusFilter != null) {
+      filtered = filtered
+          .where((v) => v.status.tryFromString() == _statusFilter)
+          .toList();
+    }
+    _visits = filtered;
+  }
+
+  void clearFilters() {
+    _searchQuery = '';
+    _statusFilter = null;
+    _applySearchAndFilter();
+    notifyListeners();
   }
 
   //

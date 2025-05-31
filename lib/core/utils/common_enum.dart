@@ -80,3 +80,17 @@ extension IntVisitStatusExtension on int {
     }
   }
 }
+
+enum VisitFilterType {
+  location(name: 'location', label: 'Location'),
+  status(name: 'status', label: 'Status');
+
+  final String name;
+  final String label;
+
+  const VisitFilterType({required this.name, required this.label});
+
+  bool get isLocation => this == VisitFilterType.location;
+  bool get isStatus => this == VisitFilterType.status;
+  
+}
