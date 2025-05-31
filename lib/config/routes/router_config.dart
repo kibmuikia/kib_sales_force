@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart' show GoRoute, GoRouter, RouteBase;
+import 'package:go_router/go_router.dart' show GoRoute, GoRouter, GoRouterState, RouteBase, ShellRoute;
 import 'package:kib_debug_print/kib_debug_print.dart' show kprint;
 import 'package:kib_sales_force/core/preferences/shared_preferences_manager.dart'
     show AppPrefsAsyncManager;
@@ -9,18 +9,80 @@ import 'package:kib_sales_force/presentation/screens/auth/sign_up/sign_up_screen
     show SignUpScreen;
 import 'package:kib_sales_force/presentation/screens/home/home_screen.dart'
     show HomeScreenProviderUtil;
+import 'package:kib_sales_force/presentation/screens/visits/create_visit_screen.dart'
+    show CreateVisitScreen;
+import 'package:kib_sales_force/presentation/screens/visits/visit_details_screen.dart'
+    show VisitDetailsScreen;
+import 'package:kib_sales_force/presentation/screens/visits/visit_list_screen.dart'
+    show VisitListScreen;
+import 'package:kib_sales_force/presentation/screens/customers/customer_list_screen.dart'
+    show CustomerListScreen;
+import 'package:kib_sales_force/presentation/screens/customers/customer_details_screen.dart'
+    show CustomerDetailsScreen;
+import 'package:kib_sales_force/presentation/screens/statistics/statistics_screen.dart'
+    show StatisticsScreen;
+import 'package:kib_sales_force/presentation/widgets/app_bottom_navigation.dart'
+    show AppBottomNavigation;
 
 class AppRoute {
   final String name;
   final String path;
-  const AppRoute({required this.name, required this.path});
+  final bool requiresAuth;
+  const AppRoute({
+    required this.name,
+    required this.path,
+    this.requiresAuth = false,
+  });
 }
 
 class AppRoutes {
+  // Auth Routes
   static const AppRoute root = AppRoute(name: 'Root', path: '/');
   static const AppRoute signUp = AppRoute(name: 'Sign-Up', path: '/sign-up');
   static const AppRoute signIn = AppRoute(name: 'Sign-In', path: '/sign-in');
-  static const AppRoute home = AppRoute(name: 'Home', path: '/home');
+  
+  // Main App Routes
+  static const AppRoute home = AppRoute(
+    name: 'Home',
+    path: '/home',
+    requiresAuth: true,
+  );
+  
+  // Visit Management Routes
+  static const AppRoute createVisit = AppRoute(
+    name: 'CreateVisit',
+    path: '/visits/create',
+    requiresAuth: true,
+  );
+  static const AppRoute visitDetails = AppRoute(
+    name: 'VisitDetails',
+    path: '/visits/:id',
+    requiresAuth: true,
+  );
+  static const AppRoute visitList = AppRoute(
+    name: 'VisitList',
+    path: '/visits',
+    requiresAuth: true,
+  );
+  
+  // Customer Management Routes
+  static const AppRoute customerList = AppRoute(
+    name: 'CustomerList',
+    path: '/customers',
+    requiresAuth: true,
+  );
+  static const AppRoute customerDetails = AppRoute(
+    name: 'CustomerDetails',
+    path: '/customers/:id',
+    requiresAuth: true,
+  );
+  
+  // Statistics Routes
+  static const AppRoute statistics = AppRoute(
+    name: 'Statistics',
+    path: '/statistics',
+    requiresAuth: true,
+  );
 }
 
 class AppNavigation {
@@ -64,7 +126,10 @@ class AppNavigation {
       _appRouteConfig = GoRouter(
         navigatorKey: appRootNavigatorStateKey,
         initialLocation: initialLocation,
+        debugLogDiagnostics: true,
         routes: _routes(prefsManager),
+        redirect: (context, state) => _handleRedirect(context, state, prefsManager),
+        errorBuilder: (context, state) => _buildErrorScreen(state),
       );
 
       _initialized = true;
@@ -74,8 +139,39 @@ class AppNavigation {
     }
   }
 
+  static Future<String?> _handleRedirect(
+    BuildContext context,
+    GoRouterState state,
+    AppPrefsAsyncManager prefsManager,
+  ) async {
+    final isAuthenticated = (await prefsManager.getCurrentUserUid())?.isNotEmpty == true;
+    final isAuthRoute = state.matchedLocation == AppRoutes.signIn.path ||
+        state.matchedLocation == AppRoutes.signUp.path;
+
+    // If not authenticated and trying to access protected route
+    if (!isAuthenticated && !isAuthRoute) {
+      return AppRoutes.signIn.path;
+    }
+
+    // If authenticated and trying to access auth routes
+    if (isAuthenticated && isAuthRoute) {
+      return AppRoutes.home.path;
+    }
+
+    return null;
+  }
+
+  static Widget _buildErrorScreen(GoRouterState state) {
+    return Scaffold(
+      body: Center(
+        child: Text('Error: ${state.error}'),
+      ),
+    );
+  }
+
   static List<RouteBase> _routes(AppPrefsAsyncManager prefsManager) {
     return [
+      // Auth Routes
       GoRoute(
         path: AppRoutes.root.path,
         name: AppRoutes.root.name,
@@ -85,25 +181,74 @@ class AppNavigation {
         path: AppRoutes.signIn.path,
         name: AppRoutes.signIn.name,
         builder: (context, state) => SignInScreen(),
-        redirect: (context, state) async {
-          if ((await prefsManager.getCurrentUserUid())?.isNotEmpty == true) {
-            return AppRoutes.home.path;
-          }
-          return null;
-        },
       ),
       GoRoute(
         path: AppRoutes.signUp.path,
         name: AppRoutes.signUp.name,
         builder: (context, state) => SignUpScreen(),
       ),
-      GoRoute(
-        path: AppRoutes.home.path,
-        name: AppRoutes.home.name,
-        builder: (context, state) => HomeScreenProviderUtil(),
+
+      // Main App Shell Route
+      ShellRoute(
+        builder: (context, state, child) {
+          return Scaffold(
+            body: child,
+            bottomNavigationBar: AppBottomNavigation(
+              currentPath: state.matchedLocation,
+            ),
+          );
+        },
+        routes: [
+          // Home Route
+          GoRoute(
+            path: AppRoutes.home.path,
+            name: AppRoutes.home.name,
+            builder: (context, state) => HomeScreenProviderUtil(),
+          ),
+
+          // Visit Management Routes
+          GoRoute(
+            path: AppRoutes.createVisit.path,
+            name: AppRoutes.createVisit.name,
+            builder: (context, state) => const CreateVisitScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.visitDetails.path,
+            name: AppRoutes.visitDetails.name,
+            builder: (context, state) {
+              final visitId = state.pathParameters['id'];
+              return VisitDetailsScreen(visitId: visitId!);
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.visitList.path,
+            name: AppRoutes.visitList.name,
+            builder: (context, state) => const VisitListScreen(),
+          ),
+
+          // Customer Management Routes
+          GoRoute(
+            path: AppRoutes.customerList.path,
+            name: AppRoutes.customerList.name,
+            builder: (context, state) => const CustomerListScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.customerDetails.path,
+            name: AppRoutes.customerDetails.name,
+            builder: (context, state) {
+              final customerId = state.pathParameters['id'];
+              return CustomerDetailsScreen(customerId: customerId!);
+            },
+          ),
+
+          // Statistics Route
+          GoRoute(
+            path: AppRoutes.statistics.path,
+            name: AppRoutes.statistics.name,
+            builder: (context, state) => const StatisticsScreen(),
+          ),
+        ],
       ),
     ];
   }
-
-  //
 }
