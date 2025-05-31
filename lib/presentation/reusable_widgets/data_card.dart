@@ -19,7 +19,7 @@ class DataCard extends StatelessWidget {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
       child: ListTile(
         onTap: onTap,
         leading: icon != null ? Icon(icon, size: 32) : null,
