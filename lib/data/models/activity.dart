@@ -18,7 +18,7 @@ class Activity extends Equatable {
     required this.id,
     required this.description,
     required this.createdAt,
-  })  : assert(id > 0, 'ID must be positive'),
+  })  : assert(id >= 0, 'ID must be non-negative'),
         assert(description != '', 'Description cannot be empty');
 
   @override
@@ -52,5 +52,15 @@ class Activity extends Equatable {
     );
   }
 
-  bool get isValid => id > 0 && description.isNotEmpty;
+  bool get isValid => id >= 0 && description.trim().isNotEmpty;
+  bool get isDefault => id == 0 && description == defaultActivityDescription;
 }
+
+/* 
+* Sample Activity:
+  {
+    "id": 1,
+    "description": "Discussed new product features.",
+    "created_at": "2025-04-30T05:23:03.034139+00:00"
+  }
+*/

@@ -2,7 +2,8 @@ import 'dart:convert' show jsonEncode;
 
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:kib_sales_force/core/constants/app_constants.dart' show defaultCustomerName;
+import 'package:kib_sales_force/core/constants/app_constants.dart'
+    show defaultCustomerName;
 
 part 'customer.g.dart';
 
@@ -17,8 +18,8 @@ class Customer extends Equatable {
     required this.id,
     required this.name,
     required this.createdAt,
-  }) : assert(id > 0, 'ID must be positive'),
-       assert(name != '', 'Name cannot be empty');
+  })  : assert(id >= 0, 'ID must be non-negative'),
+        assert(name != '', 'Name cannot be empty');
 
   @override
   List<Object?> get props => [id, name, createdAt];
@@ -51,5 +52,15 @@ class Customer extends Equatable {
     );
   }
 
-  bool get isValid => id > 0 && name.isNotEmpty;
+  bool get isValid => id >= 0 && name.trim().isNotEmpty;
+  bool get isDefault => id == 0 && name == defaultCustomerName;
 }
+
+/* 
+* Sample Customer:
+  {
+    "id": 1,
+    "name": "John Doe",
+    "created_at": "2025-04-30T05:23:03.034139+00:00"
+  }
+*/
